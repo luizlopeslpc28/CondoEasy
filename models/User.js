@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('./db');
+const funcionario = require('./Funcionario');
 
 const User = db.define('users', {
     id: {
@@ -30,6 +31,10 @@ const User = db.define('users', {
     },
     bloco: {
         type: Sequelize.STRING,
+        allowNull: false
+    },
+    tipo_usuario: { 
+        type: Sequelize.ENUM('sindico', 'morador', 'funcionario'),
         allowNull: false
     }
 });

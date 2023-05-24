@@ -8,6 +8,8 @@ const { eAdmin } = require('./middlewares/auth');
 const User = require('./models/User');
 const chamados = require('./models/Chamados');
 const reservas = require('./models/Reservas');
+const funcionario = require('./models/Funcionario');
+
 
 app.use(express.json());
 
@@ -37,10 +39,11 @@ app.post('/cadastrar', async (req, res) => {
     dados.password = await bcrypt.hash(dados.password, 8);
 
     await User.create(dados)
-    .then(() => {
+    .then((user) => {
         return res.json({
             erro: false,
-            mensagem: "Usuário cadastrado com sucesso!"
+            mensagem: "Usuário cadastrado com sucesso!",
+            tipo_usuario: user.tipo_usuario
         });
     }).catch(() => {
         return res.status(400).json({
