@@ -11,9 +11,6 @@ const reservas = require('./models/Reservas');
 const funcionario = require('./models/Funcionario');
 
 
-app.use(express.json());
-
-
 app.get('/', eAdmin, async (req, res) => {
     await User.findAll({
         attributes: ['id', 'name', 'email', 'password', 'cpf'],
