@@ -42,6 +42,6 @@ const Reservas = db.define('reservas', {
 Reservas.belongsTo(User, { foreignKey: 'usuarioId' });
 
 //Criar a tabela
-//reservas.sync();
+Reservas.sync();
 
 module.exports = Reservas;
