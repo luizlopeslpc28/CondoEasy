@@ -9,9 +9,6 @@ const User = require('./models/User');
 const chamados = require('./models/Chamados');
 const reservas = require('./models/Reservas');
 
-app.use(express.json());
-
-
 app.get('/', eAdmin, async (req, res) => {
     await User.findAll({
         attributes: ['id', 'name', 'email', 'password', 'cpf'],
