@@ -119,7 +119,75 @@ router.delete('/chamados/:id', async (req, res) => {
   }
 });
 
+router.put('/chamados/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const chamado = await Chamados.findByPk(id);
+    if (!chamado) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: 'Chamado não encontrado'
+      });
+    }
 
+    // Guardar os valores originais dos campos antes da atualização
+    const originalLocal = chamado.local;
+    const originalApartamento = chamado.apartamento;
+    const originalBloco = chamado.bloco;
+    const originalOcorrencia = chamado.ocorrencia;
+    const originalAnexo = chamado.anexo;
+    const originaldescricao = chamado.descricao;
+    const originalDataAbertura = chamado.dataAbertura;
+
+    const { local, apartamento, bloco, ocorrencia, descricao, dataAbertura } = req.body;
+    chamado.local = local || chamado.local;
+    chamado.apartamento = apartamento || chamado.apartamento;
+    chamado.bloco = bloco || chamado.bloco;
+    chamado.ocorrencia = ocorrencia || chamado.ocorrencia;
+    chamado.descricao = descricao || chamado.descricao;
+    chamado.dataAbertura = dataAbertura || chamado.dataAbertura;
+
+    await chamado.save();
+
+    // Verificar quais campos foram alterados e criar uma mensagem personalizada
+    const changes = [];
+    if (chamado.local !== originalLocal) {
+      changes.push('local');
+    }
+    if (chamado.apartamento !== originalApartamento) {
+      changes.push('apartamento');
+    }
+    if (chamado.bloco !== originalBloco) {
+      changes.push('bloco');
+    }
+    if (chamado.ocorrencia !== originalOcorrencia) {
+      changes.push('ocorrencia');
+    }
+    if (chamado.anexo !== originalAnexo) {
+      changes.push('anexo');
+    }
+    if (chamado.descricao !== originaldescricao) {
+      changes.push('descricao');
+    }
+    if (chamado.dataAbertura !== originalDataAbertura) {
+      changes.push('dataAbertura');
+    }
+
+    const alteracoes = changes.map((campo) => `O usuario alterou ${campo}`);
+
+    return res.json({
+      erro: false,
+      mensagem: 'Dados do chamado atualizados com sucesso',
+      alteracoes: alteracoes
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar os dados do chamado:', error);
+    return res.status(500).json({
+      erro: true,
+      mensagem: 'Erro ao atualizar os dados do chamado. Por favor, tente novamente mais tarde.'
+    });
+  }
+});
 
 
 module.exports = router;
