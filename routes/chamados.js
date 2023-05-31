@@ -16,22 +16,33 @@ router.post('/chamados', async (req, res) => {
     try {
       // Consulta para obter o nome do usuário
       const usuario = await User.findOne({
-        attributes: ['name'],
+        attributes: ['name', 'tipo_usuario'], // Adicione 'tipo' como um atributo a ser retornado
         where: { idUsuario: decoded.idUsuario }
       });
 
       if (usuario) {
         dados.nomeUsuario = usuario.name;
+
+        let tipoUsuario = '';
+        if (usuario.tipo_usuario === 'morador') {
+          tipoUsuario = 'Morador';
+        } else if (usuario.tipo_usuario === 'funcionario') {
+          tipoUsuario = 'Funcionário';
+        } else if (usuario.tipo_usuario === 'sindico') {
+          tipoUsuario = 'Síndico';
+        }
+
+        const chamadoCriado = await chamados.create(dados);
+
+        return res.json({
+          erro: false,
+          mensagem: "Chamado cadastrado com sucesso!",
+          NUMERO_OS: chamadoCriado.idChamados,
+          ID_USUARIO: dados.usuarioId,
+          SOLICITANTE: dados.nomeUsuario,
+          TIPO_USUARIO: tipoUsuario
+        });
       }
-
-      await chamados.create(dados);
-
-      return res.json({
-        erro: false,
-        mensagem: "Chamado cadastrado com sucesso!",
-        usuarioId: dados.usuarioId,
-        nomeUsuario: dados.nomeUsuario
-      });
     } catch (error) {
       console.error('Erro ao cadastrar o chamado: ', error);
       return res.status(400).json({
@@ -41,5 +52,6 @@ router.post('/chamados', async (req, res) => {
     }
   }
 });
+
 
 module.exports = router;
