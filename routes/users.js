@@ -39,7 +39,6 @@ router.get('/', eAdmin, async (req, res) => {
     }
 });
 
-
 router.post('/cadastrar', async (req, res) => {
     // Código para cadastrar um usuário
     var dados = req.body;
