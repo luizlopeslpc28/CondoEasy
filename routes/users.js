@@ -12,6 +12,14 @@ router.get('/', eAdmin, async (req, res) => {
             order: [['idUsuario', 'DESC']]
         });
 
+        if (users.length === 0) {
+            return res.json({
+                erro: false,
+                mensagem: 'Nenhum usuário registrado',
+                id_usuario_logado: req.userId
+            });
+        }
+
         const usersWithToken = users.map((user) => {
             const token = jwt.sign({ idUsuario: user.idUsuario }, 'SEU_SEGREDO'); // Gere o token para cada usuário aqui
             return { ...user.toJSON(), token }; // Adicione o token ao objeto do usuário
@@ -30,6 +38,7 @@ router.get('/', eAdmin, async (req, res) => {
         });
     }
 });
+
 
 router.post('/cadastrar', async (req, res) => {
     // Código para cadastrar um usuário
@@ -96,6 +105,31 @@ router.post('/login', async (req, res) => {
         });
     }
 });
+
+router.delete('/usuarios/:id', eAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({
+          erro: true,
+          mensagem: 'Usuário não encontrado'
+        });
+      }
+      await user.destroy();
+      return res.json({
+        erro: false,
+        mensagem: 'Usuário deletado com sucesso'
+      });
+    } catch (error) {
+      console.error('Erro ao deletar o usuário:', error);
+      return res.status(500).json({
+        erro: true,
+        mensagem: 'Erro ao deletar o usuário. Por favor, tente novamente mais tarde.'
+      });
+    }
+  });
+  
 
 
 module.exports = router;

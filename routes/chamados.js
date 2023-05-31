@@ -95,7 +95,7 @@ router.get('/lerChamados', async (req, res) => {
   }
 });
 
-router.delete('/chamados/:id', eAdmin, async (req, res) => {
+router.delete('/chamados/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const chamado = await Chamados.findByPk(id);
