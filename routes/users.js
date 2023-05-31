@@ -8,8 +8,8 @@ const User = require('../Tabelas/User');
 router.get('/', eAdmin, async (req, res) => {
     // Código para obter os usuários
     await User.findAll({
-        attributes: ['id', 'name', 'email', 'password', 'cpf'],
-        order: [['id', "DESC"]]
+        attributes: ['idUsuario', 'name', 'email', 'password', 'cpf'],
+        order: [['idUsuario', "DESC"]]
     })
     .then((users) => {
         return res.json({
@@ -17,7 +17,8 @@ router.get('/', eAdmin, async (req, res) => {
             users,
             id_usuario_logado: req.userId
         });
-    }).catch(() => {
+    }).catch((error) => {
+        console.error('Erro ao listar o usuarios: ', error);
         return res.status(400).json({
             erro: true,
             mensagem: "Erro: Nenhum usuário encontrado!"
@@ -48,38 +49,48 @@ router.post('/cadastrar', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    // Código para fazer o login do usuário
-    
-    const user = await User.findOne({
-        attributes: ['id', 'name', 'email', 'password'],
-        where: {
-            email: req.body.email
+    try {
+        const user = await User.findOne({
+            attributes: ['idUsuario', 'name', 'email', 'password'],
+            where: {
+                email: req.body.email
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                erro: true,
+                mensagem: "Erro: Usuário ou senha incorreta! Nenhum usuário com este e-mail"
+            });
         }
-    });
-    if(user === null){
-        return res.status(400).json({
+
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+        if (!passwordMatch) {
+            return res.status(400).json({
+                erro: true,
+                mensagem: "Erro: Usuário ou senha incorreta! Senha incorreta!"
+            });
+        }
+
+        const token = jwt.sign({ idUsuario: user.idUsuario }, "D62ST92Y7A6V7K5C6W9ZU6W8KS3", {
+            //expiresIn: 600 //10 min
+            //expiresIn: 60 //1 min
+            expiresIn: '7d' // 7 dias
+        });
+
+        return res.json({
+            erro: false,
+            mensagem: "Login realizado com sucesso!",
+            token
+        });
+    } catch (error) {
+        console.error('Erro durante o login:', error);
+        return res.status(500).json({
             erro: true,
-            mensagem: "Erro: Usuário ou a senha incorreta! Nenhum usuário com este e-mail"
+            mensagem: "Erro durante o login. Por favor, tente novamente mais tarde."
         });
     }
-    if(!(await bcrypt.compare(req.body.password, user.password))){
-        return res.status(400).json({
-            erro: true,
-            mensagem: "Erro: Usuário ou a senha incorreta! Senha incorreta!"
-        });
-    }
-
-    var token = jwt.sign({id: user.id}, "D62ST92Y7A6V7K5C6W9ZU6W8KS3", {
-        //expiresIn: 600 //10 min
-        //expiresIn: 60 //1 min
-        expiresIn: '7d' // 7 dia
-    });
-
-    return res.json({
-        erro: false,
-        mensagem: "Login realizado com sucesso!",
-        token
-    });
 });
+
 
 module.exports = router;

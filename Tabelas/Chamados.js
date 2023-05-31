@@ -34,7 +34,6 @@ const Chamados = db.define('chamados', {
   },
   usuarioId: {
     type: Sequelize.INTEGER,
-    allowNull: false,
     references: {
       model: User,
       key: 'idUsuario'
