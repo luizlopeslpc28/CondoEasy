@@ -6,24 +6,29 @@ const { eAdmin } = require('../middlewares/auth');
 const User = require('../Tabelas/User');
 
 router.get('/', eAdmin, async (req, res) => {
-    // Código para obter os usuários
-    await User.findAll({
-        attributes: ['idUsuario', 'name', 'email', 'password', 'cpf'],
-        order: [['idUsuario', "DESC"]]
-    })
-    .then((users) => {
+    try {
+        const users = await User.findAll({
+            attributes: ['idUsuario', 'name', 'email', 'password', 'cpf'],
+            order: [['idUsuario', 'DESC']]
+        });
+
+        const usersWithToken = users.map((user) => {
+            const token = jwt.sign({ idUsuario: user.idUsuario }, 'SEU_SEGREDO'); // Gere o token para cada usuário aqui
+            return { ...user.toJSON(), token }; // Adicione o token ao objeto do usuário
+        });
+
         return res.json({
             erro: false,
-            users,
+            users: usersWithToken,
             id_usuario_logado: req.userId
         });
-    }).catch((error) => {
-        console.error('Erro ao listar o usuarios: ', error);
+    } catch (error) {
+        console.error('Erro ao listar os usuários: ', error);
         return res.status(400).json({
             erro: true,
-            mensagem: "Erro: Nenhum usuário encontrado!"
+            mensagem: 'Erro: Nenhum usuário encontrado!'
         });
-    });    
+    }
 });
 
 router.post('/cadastrar', async (req, res) => {

@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const chamados = require('../Tabelas/Chamados');
-const User = require('../Tabelas/User'); // Importe o modelo de usuário apropriado
+const User = require('../Tabelas/User');
+const moment = require('moment');
 
 router.post('/chamados', async (req, res) => {
   var dados = req.body;
@@ -14,9 +15,8 @@ router.post('/chamados', async (req, res) => {
     dados.usuarioId = decoded.idUsuario;
 
     try {
-      // Consulta para obter o nome do usuário
       const usuario = await User.findOne({
-        attributes: ['name', 'tipo_usuario'], // Adicione 'tipo' como um atributo a ser retornado
+        attributes: ['name', 'tipo_usuario'],
         where: { idUsuario: decoded.idUsuario }
       });
 
@@ -34,13 +34,18 @@ router.post('/chamados', async (req, res) => {
 
         const chamadoCriado = await chamados.create(dados);
 
+        const numeroOS = chamadoCriado.idChamados.toString().padStart(4, '0');
+        
+        const dataAbertura = moment(chamadoCriado.dataAbertura).format('DD/MM/YYYY HH:mm:ss');
+
         return res.json({
           erro: false,
           mensagem: "Chamado cadastrado com sucesso!",
-          NUMERO_OS: chamadoCriado.idChamados,
+          NUMERO_OS: numeroOS,
           ID_USUARIO: dados.usuarioId,
           SOLICITANTE: dados.nomeUsuario,
-          TIPO_USUARIO: tipoUsuario
+          TIPO_USUARIO: tipoUsuario,
+          DATA_ABERTURA: dataAbertura
         });
       }
     } catch (error) {
@@ -52,6 +57,5 @@ router.post('/chamados', async (req, res) => {
     }
   }
 });
-
 
 module.exports = router;

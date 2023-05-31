@@ -4,10 +4,11 @@ const User = require('./User');
 
 const Chamados = db.define('chamados', {
   idChamados: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.INTEGER(4).ZEROFILL,
+    primaryKey: true,
     autoIncrement: true,
+    field: 'idChamados',
     allowNull: false,
-    primaryKey: true
   },
   local: {
     type: Sequelize.STRING,
@@ -32,6 +33,10 @@ const Chamados = db.define('chamados', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  dataAbertura: {
+    type: Sequelize.DATE,
+    allowNull: false
+  },
   usuarioId: {
     type: Sequelize.INTEGER,
     references: {
@@ -39,6 +44,8 @@ const Chamados = db.define('chamados', {
       key: 'idUsuario'
     }
   }
+}, {
+  timestamps: false // Desabilita os campos createdAt e updatedAt
 });
 
 //Chamados.sync();
