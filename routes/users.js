@@ -129,7 +129,7 @@ router.delete('/usuarios/:id', eAdmin, async (req, res) => {
     }
   });
   
-  router.put('/usuarios/:id', eAdmin, async (req, res) => {
+router.put('/usuarios/:id', eAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const user = await User.findByPk(id);
