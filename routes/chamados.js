@@ -1,3 +1,4 @@
+//Importação de módulos:
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -6,6 +7,7 @@ const User = require('../Tabelas/User');
 const moment = require('moment');
 const Chamados = require('../Tabelas/Chamados');
 
+//Rota POST para cadastrar Chamados
 router.post('/chamados', async (req, res) => {
   var dados = req.body;
 
@@ -65,6 +67,7 @@ router.post('/chamados', async (req, res) => {
   }
 });
 
+//Rota GET para listar Chamados
 router.get('/lerChamados', async (req, res) => {
   try {
     const listaChamados = await Chamados.findAll({
@@ -101,6 +104,7 @@ router.get('/lerChamados', async (req, res) => {
   }
 });
 
+//Rota PUT para atualizar dados do Chamado
 router.put('/chamados/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -185,6 +189,7 @@ router.put('/chamados/:id', async (req, res) => {
   }
 });
 
+//Rota DELETE para deletar o chamado
 router.delete('/chamados/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -209,4 +214,5 @@ router.delete('/chamados/:id', async (req, res) => {
   }
 });
 
+//Exportação do roteador:
 module.exports = router;

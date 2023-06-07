@@ -1,3 +1,4 @@
+//Importação de módulos:
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -5,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { eAdmin } = require('../middlewares/auth');
 const User = require('../Tabelas/User');
 
+//Rota GET para listar usuários:
 router.get('/', eAdmin, async (req, res) => {
     try {
         const users = await User.findAll({
@@ -39,6 +41,7 @@ router.get('/', eAdmin, async (req, res) => {
     }
 });
 
+//Rota POST para cadastrar usuário:
 router.post('/cadastrar', async (req, res) => {
     // Código para cadastrar um usuário
     var dados = req.body;
@@ -61,6 +64,7 @@ router.post('/cadastrar', async (req, res) => {
     });    
 });
 
+//Rota POST para login:
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({
@@ -105,6 +109,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//Rota DELETE para deletar usuário:
 router.delete('/usuarios/:id', eAdmin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -129,6 +134,7 @@ router.delete('/usuarios/:id', eAdmin, async (req, res) => {
     }
   });
   
+//Rota PUT para atualizar usuário:
 router.put('/usuarios/:id', eAdmin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -201,6 +207,5 @@ router.put('/usuarios/:id', eAdmin, async (req, res) => {
     }
   });
   
-  
-
+//Exportação do roteador:
 module.exports = router;
