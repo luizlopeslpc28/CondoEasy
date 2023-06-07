@@ -1,6 +1,8 @@
+//Importação de módulos:
 const Sequelize = require('sequelize');
 const db = require('../conexao/db');
 
+//Definição do modelo de dados:
 const User = db.define('users', {
     idUsuario: {
         type: Sequelize.INTEGER,
@@ -38,6 +40,8 @@ const User = db.define('users', {
     }
 });
 
+//Sincronização da tabela:
 //User.sync();
 
+//Exportação do modelo de dados:
 module.exports = User;

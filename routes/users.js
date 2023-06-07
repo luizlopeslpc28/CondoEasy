@@ -1,3 +1,4 @@
+//Importação de módulos:
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -5,12 +6,12 @@ const jwt = require('jsonwebtoken');
 const { eAdmin } = require('../middlewares/auth');
 const User = require('../Tabelas/User');
 
-router.get('/', async (req, res) => {
-  try {
-      const users = await User.findAll({
-          attributes: ['idUsuario', 'name', 'email', 'password', 'cpf'],
-          order: [['idUsuario', 'DESC']]
-      });
+router.get('/', eAdmin, async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: ['idUsuario', 'name', 'email', 'password', 'cpf'],
+            order: [['idUsuario', 'DESC']]
+        });
 
       if (users.length === 0) {
           return res.json({
@@ -39,7 +40,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 router.post('/cadastrar', async (req, res) => {
     // Código para cadastrar um usuário
     var dados = req.body;
@@ -62,6 +62,7 @@ router.post('/cadastrar', async (req, res) => {
     });    
 });
 
+//Rota POST para login:
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({
@@ -106,6 +107,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//Rota DELETE para deletar usuário:
 router.delete('/usuarios/:id', eAdmin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -130,6 +132,7 @@ router.delete('/usuarios/:id', eAdmin, async (req, res) => {
     }
   });
   
+//Rota PUT para atualizar usuário:
 router.put('/usuarios/:id', eAdmin, async (req, res) => {
     try {
       const { id } = req.params;
@@ -202,6 +205,5 @@ router.put('/usuarios/:id', eAdmin, async (req, res) => {
     }
   });
   
-  
-
+//Exportação do roteador:
 module.exports = router;

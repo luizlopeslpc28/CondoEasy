@@ -1,7 +1,11 @@
+////Importação de módulos:
 const Sequelize = require('sequelize');
 const db = require('../conexao/db');
+
+//Importação para FG KEY
 const User = require('./User');
 
+//Definição do modelo de dados:
 const Chamados = db.define('chamados', {
   idChamados: {
     type: Sequelize.INTEGER(4).ZEROFILL,
@@ -56,6 +60,8 @@ const Chamados = db.define('chamados', {
   timestamps: false // Desabilita os campos createdAt e updatedAt
 });
 
+//Sincronização da tabela:
 //Chamados.sync();
 
+//Exportação do modelo de dados:
 module.exports = Chamados;
