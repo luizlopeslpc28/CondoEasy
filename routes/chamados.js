@@ -39,10 +39,8 @@ router.post('/chamados', async (req, res) => {
 
 router.get('/lerChamados', async (req, res) => {
   try {
-    const { userId } = req.user; // Supondo que o ID do usuário esteja disponível na propriedade 'userId' do objeto de usuário autenticado
 
     const listaChamados = await Chamados.findAll({
-      where: { userId }, // Filtra os chamados pelo ID do usuário
       attributes: ['idChamados', 'descricao', 'dataAbertura', 'status'],
       order: [['idChamados', 'DESC']]
     });
