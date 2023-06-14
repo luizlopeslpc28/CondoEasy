@@ -41,14 +41,6 @@ const Chamados = db.define('chamados', {
     type: Sequelize.DATE,
     allowNull: false
   },
-  dataFechamento: {
-    type: Sequelize.DATE,
-    allowNull: true
-  },
-  status: {
-    type: Sequelize.ENUM('Em Aberto', 'Em Execução', 'Encerrado'),
-    allowNull: false
-  },
   usuarioId: {
     type: Sequelize.INTEGER,
     references: {
