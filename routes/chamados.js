@@ -37,19 +37,19 @@ router.post('/chamados', async (req, res) => {
   }
 });
 
-
-
-//Rota GET para listar Chamados
 router.get('/lerChamados', async (req, res) => {
   try {
+    const { userId } = req.user; // Supondo que o ID do usuário esteja disponível na propriedade 'userId' do objeto de usuário autenticado
+
     const listaChamados = await Chamados.findAll({
+      where: { userId }, // Filtra os chamados pelo ID do usuário
       attributes: ['idChamados', 'descricao', 'dataAbertura', 'status'],
       order: [['idChamados', 'DESC']]
     });
 
     const listaChamadosFormatada = listaChamados.map(chamado => {
       const chamadoFormatado = chamado.toJSON();
-      chamadoFormatado.dataAbertura = moment(chamado.dataAbertura).format('DD/MM/YYYY HH:mm:ss');
+      chamadoFormatado.dataAbertura = moment(chamado.dataAbertura).format('DD/MM/YYYY');
       return chamadoFormatado;
     });
 
@@ -65,6 +65,7 @@ router.get('/lerChamados', async (req, res) => {
     });
   }
 });
+
 
 
 //Rota PUT para atualizar dados do Chamado

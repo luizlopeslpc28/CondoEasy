@@ -110,4 +110,40 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.put('/alterar/:email', async (req, res) => {
+  try {
+    const { email } = req.params; // Obtenha o email da rota
+    const { password } = req.body; // Obtenha a nova senha dos dados da solicitação
+
+    // Encontre o usuário pelo email
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: 'Usuário não encontrado!'
+      });
+    }
+
+    // Atualize a senha do usuário
+    user.password = await bcrypt.hash(password, 8); // Hash da nova senha
+
+    await user.save(); // Salve o usuário atualizado
+
+    return res.json({
+      erro: false,
+      mensagem: 'Senha do usuário atualizada com sucesso!'
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar a senha do usuário:', error);
+    return res.status(400).json({
+      erro: true,
+      mensagem: 'Erro ao atualizar a senha do usuário. Por favor, tente novamente mais tarde.'
+    });
+  }
+});
+
 module.exports = router;
+
+
+
