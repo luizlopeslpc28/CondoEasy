@@ -41,6 +41,10 @@ const Chamados = db.define('chamados', {
     type: Sequelize.DATE,
     allowNull: false
   },
+  status: {
+    type: Sequelize.STRING,
+    allowNull: true
+  },
   usuarioId: {
     type: Sequelize.INTEGER,
     references: {
