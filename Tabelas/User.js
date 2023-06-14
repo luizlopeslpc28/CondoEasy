@@ -34,10 +34,6 @@ const User = db.define('users', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    tipo_usuario: {
-        type: Sequelize.ENUM('sindico', 'morador', 'funcionario'),
-        allowNull: false
-    }
 });
 
 //Sincronização da tabela:

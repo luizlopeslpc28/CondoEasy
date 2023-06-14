@@ -7,7 +7,6 @@ const User = require('../Tabelas/User');
 const moment = require('moment');
 const Chamados = require('../Tabelas/Chamados');
 
-//Rota POST para cadastrar Chamados
 router.post('/chamados', async (req, res) => {
   var dados = req.body;
 
@@ -19,21 +18,12 @@ router.post('/chamados', async (req, res) => {
 
     try {
       const usuario = await User.findOne({
-        attributes: ['name', 'tipo_usuario'],
+        attributes: ['name'],
         where: { idUsuario: decoded.idUsuario }
       });
 
       if (usuario) {
         dados.nomeUsuario = usuario.name;
-
-        let tipoUsuario = '';
-        if (usuario.tipo_usuario === 'morador') {
-          tipoUsuario = 'Morador';
-        } else if (usuario.tipo_usuario === 'funcionario') {
-          tipoUsuario = 'Funcionário';
-        } else if (usuario.tipo_usuario === 'sindico') {
-          tipoUsuario = 'Síndico';
-        }
 
         // Defina o status como "aberto" caso não seja fornecido
         if (!dados.status) {
@@ -49,11 +39,9 @@ router.post('/chamados', async (req, res) => {
         return res.json({
           erro: false,
           mensagem: "Chamado cadastrado com sucesso!",
-          NUMERO_OS: numeroOS,
-          ID_USUARIO: dados.usuarioId,
-          SOLICITANTE: dados.nomeUsuario,
-          TIPO_USUARIO: tipoUsuario,
-          DATA_ABERTURA: dataAbertura,
+          idChamados: numeroOS,
+          descricao: chamadoCriado.descricao,
+          dataAbertura: dataAbertura,
           status: chamadoCriado.status
         });
       }
@@ -66,6 +54,7 @@ router.post('/chamados', async (req, res) => {
     }
   }
 });
+
 
 //Rota GET para listar Chamados
 router.get('/lerChamados', async (req, res) => {
